@@ -1,12 +1,16 @@
 package com.arctouch.codechallenge.home
 
+import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.arctouch.codechallenge.R
+import com.arctouch.codechallenge.detail.DetailActivity
 import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.util.Constants.Companion.ARGS_MOVIE
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
+import com.arctouch.codechallenge.util.redirectToActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
@@ -26,6 +30,11 @@ class HomeAdapter(private val movies: List<Movie>) : androidx.recyclerview.widge
                 .load(movie.posterPath?.let { movieImageUrlBuilder.buildPosterUrl(it) })
                 .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
                 .into(itemView.posterImageView)
+
+            val bundle = Bundle()
+            bundle.putParcelable(ARGS_MOVIE, movie)
+
+            itemView.setOnClickListener { redirectToActivity(DetailActivity::class.java,it.context, bundle, true ) }
         }
     }
 

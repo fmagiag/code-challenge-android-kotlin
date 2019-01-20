@@ -3,17 +3,23 @@ package com.arctouch.codechallenge.base
 import androidx.appcompat.app.AppCompatActivity
 import com.arctouch.codechallenge.api.TmdbApi
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 abstract class BaseActivity : AppCompatActivity() {
+    val logging = HttpLoggingInterceptor()
+
+    init {
+        logging.level = HttpLoggingInterceptor.Level.BODY
+    }
 
     protected val api: TmdbApi = Retrofit.Builder()
-        .baseUrl(TmdbApi.URL)
-        .client(OkHttpClient.Builder().build())
-        .addConverterFactory(MoshiConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .build()
-        .create(TmdbApi::class.java)
+            .baseUrl(TmdbApi.URL)
+            .client(OkHttpClient.Builder().addInterceptor(logging).build())
+            .addConverterFactory(MoshiConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build()
+            .create(TmdbApi::class.java)
 }
