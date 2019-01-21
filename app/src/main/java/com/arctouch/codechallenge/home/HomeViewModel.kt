@@ -13,7 +13,7 @@ import com.arctouch.codechallenge.model.TopRatedMoviesResponse
 import com.arctouch.codechallenge.util.Constants.Companion.DEFAULT_REGION
 import com.arctouch.codechallenge.util.Constants.Companion.PAGE_START
 
-class HomeViewModel() : ViewModel(){
+class HomeViewModel : ViewModel(){
 
     var isLoading = false
     var isLastPage = false
