@@ -3,76 +3,40 @@ package com.arctouch.codechallenge.home
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arctouch.codechallenge.AppApplication.Companion.api
 import com.arctouch.codechallenge.R
-import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
-import com.arctouch.codechallenge.model.TopRatedMoviesResponse
-import com.arctouch.codechallenge.util.Constants.Companion.API_KEY
-import com.arctouch.codechallenge.util.Constants.Companion.DEFAULT_LANGUAGE
-import com.arctouch.codechallenge.util.Constants.Companion.DEFAULT_REGION
-import com.arctouch.codechallenge.util.Constants.Companion.PAGE_START
 import com.arctouch.codechallenge.util.PaginationScrollListener
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.home_activity.*
+import androidx.lifecycle.ViewModelProviders
+
 
 class HomeActivity : AppCompatActivity() {
 
-    private var totalPages = 0
-    private var currentPage = PAGE_START
-    private var isLoading = false
-    private var isLastPage = false
     private var adapter = HomeAdapter()
+    lateinit var viewModel : HomeViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
+        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         configRecyclerView()
-        loadCache()
+        viewModel.onMoviesResult.observe(this, Observer<MutableList<Movie>> { this.onMoviesResult(it) })
+        viewModel.startService()
     }
 
-    private fun loadCache(){
-        api.genres(API_KEY, DEFAULT_LANGUAGE)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Cache.cacheGenres(it.genres)
-                    loadPage()
-                }
-    }
-
-    private fun loadPage() {
-        api.topRatedMovies(API_KEY, DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (currentPage == PAGE_START) {
-                        totalPages = it.totalPages
-                        progressBar.visibility = View.GONE
-                    } else {
-                        adapter.removeLoadingFooter()
-                        isLoading = false
-                    }
-                    adapter.addMovies(getMoviesWithGenres(it))
-                    checkPage()
-                }
-    }
-
-    private fun checkPage() {
-        if (currentPage < totalPages)
+    private fun onMoviesResult(it: MutableList<Movie>) {
+        if (progressBar.visibility == View.VISIBLE) {
+            progressBar.visibility = View.GONE
+        } else {
+            adapter.removeLoadingFooter()
+        }
+        adapter.addMovies(it)
+        if (!viewModel.isLastPage) {
             adapter.addLoadingFooter()
-        else
-            isLastPage = true
-    }
-
-
-    private fun getMoviesWithGenres(it: TopRatedMoviesResponse): MutableList<Movie> {
-        return it.results.map { movie ->
-            movie.copy(genres = Cache.genres.filter { movie.genreIds?.contains(it.id) == true })
-        }.toMutableList()
+        }
     }
 
     private fun configRecyclerView() {
@@ -81,21 +45,16 @@ class HomeActivity : AppCompatActivity() {
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItems() {
-                isLoading = true
-                currentPage += 1
-                loadPage()
-            }
-
-            override fun getTotalPageCount(): Int {
-                return totalPages
+                viewModel.isLoading = true
+                viewModel.loadPage()
             }
 
             override fun isLastPage(): Boolean {
-                return isLastPage
+                return viewModel.isLastPage
             }
 
             override fun isLoading(): Boolean {
-                return isLoading
+                return viewModel.isLoading
             }
         })
     }

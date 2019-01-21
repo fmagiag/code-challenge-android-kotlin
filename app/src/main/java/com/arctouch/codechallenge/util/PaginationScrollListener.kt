@@ -22,8 +22,6 @@ abstract class PaginationScrollListener(internal var layoutManager: LinearLayout
 
     protected abstract fun loadMoreItems()
 
-    abstract fun getTotalPageCount(): Int
-
     abstract fun isLastPage(): Boolean
 
     abstract fun isLoading(): Boolean
