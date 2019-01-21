@@ -2,9 +2,7 @@ package com.arctouch.codechallenge.util
 
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.os.Bundle
-import com.arctouch.codechallenge.base.BaseActivity
 import com.arctouch.codechallenge.util.Constants.Companion.BUNDLE_ARGS
 
 

@@ -2,10 +2,12 @@ package com.arctouch.codechallenge.home
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.arctouch.codechallenge.AppApplication
+import com.arctouch.codechallenge.AppApplication.Companion.api
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.api.TmdbApi
-import com.arctouch.codechallenge.base.BaseActivity
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.TopRatedMoviesResponse
@@ -15,7 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.home_activity.*
 
-class HomeActivity : BaseActivity() {
+class HomeActivity : AppCompatActivity() {
 
     private var totalPages = 0
     private var currentPage = PAGE_START
