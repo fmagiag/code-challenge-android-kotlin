@@ -1,7 +1,6 @@
 package com.arctouch.codechallenge.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arctouch.codechallenge.R
@@ -10,7 +9,6 @@ import com.arctouch.codechallenge.base.BaseActivity
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.TopRatedMoviesResponse
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse
 import com.arctouch.codechallenge.util.Constants.Companion.PAGE_START
 import com.arctouch.codechallenge.util.PaginationScrollListener
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,7 +28,17 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
         configRecyclerView()
-        loadPage()
+        loadCache()
+    }
+
+    private fun loadCache(){
+        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Cache.cacheGenres(it.genres)
+                    loadPage()
+                }
     }
 
     private fun loadPage() {
