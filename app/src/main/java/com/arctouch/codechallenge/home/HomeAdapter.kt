@@ -8,7 +8,7 @@ import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.detail.DetailActivity
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.Constants.Companion.ARGS_MOVIE
-import com.arctouch.codechallenge.util.MovieImageUrlBuilder
+import com.arctouch.codechallenge.util.buildPosterUrl
 import com.arctouch.codechallenge.util.redirectToActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -28,7 +28,7 @@ class HomeAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<HomeAdapte
         if (this.movies == null)
             this.movies = movies
         else
-            movies!!.forEach { addMovie(it) }
+            movies.forEach { addMovie(it) }
         notifyDataSetChanged()
     }
 
@@ -55,8 +55,6 @@ class HomeAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<HomeAdapte
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
-        private val movieImageUrlBuilder = MovieImageUrlBuilder()
-
         fun bind(movie: Movie, isLoading: Boolean) {
             if (isLoading) {
                 itemView.card.visibility = View.GONE
@@ -69,7 +67,7 @@ class HomeAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<HomeAdapte
                 itemView.releaseDateTextView.text = movie.releaseDate
 
                 Glide.with(itemView)
-                        .load(movie.posterPath?.let { movieImageUrlBuilder.buildPosterUrl(it) })
+                        .load(movie.posterPath?.let { buildPosterUrl(it) })
                         .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
                         .into(itemView.posterImageView)
 

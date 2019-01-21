@@ -2,6 +2,7 @@ package com.arctouch.codechallenge
 
 import android.app.Application
 import com.arctouch.codechallenge.api.TmdbApi
+import com.arctouch.codechallenge.util.Constants.Companion.URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -16,7 +17,7 @@ class AppApplication : Application() {
         init {
             logging.level = HttpLoggingInterceptor.Level.BODY
             api = Retrofit.Builder()
-                    .baseUrl(TmdbApi.URL)
+                    .baseUrl(URL)
                     .client(OkHttpClient.Builder().addInterceptor(logging).build())
                     .addConverterFactory(MoshiConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

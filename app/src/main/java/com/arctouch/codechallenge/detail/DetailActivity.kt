@@ -6,14 +6,13 @@ import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.Constants.Companion.ARGS_MOVIE
 import com.arctouch.codechallenge.util.Constants.Companion.BUNDLE_ARGS
-import com.arctouch.codechallenge.util.MovieImageUrlBuilder
+import com.arctouch.codechallenge.util.buildPosterUrl
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
-    private val movieImageUrlBuilder = MovieImageUrlBuilder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -27,7 +26,7 @@ class DetailActivity : AppCompatActivity() {
                 tv_title.text = it.originalTitle
                 tv_summary.text = it.overview
                 Glide.with(this)
-                        .load(it.posterPath?.let { movieImageUrlBuilder.buildPosterUrl(it)})
+                        .load(it.posterPath?.let { buildPosterUrl(it)})
                         .apply(RequestOptions().placeholder(R.drawable.ic_image_placeholder))
                         .into(iv_cover)
             }

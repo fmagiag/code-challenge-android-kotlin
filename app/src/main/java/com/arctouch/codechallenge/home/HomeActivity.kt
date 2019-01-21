@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arctouch.codechallenge.AppApplication
 import com.arctouch.codechallenge.AppApplication.Companion.api
 import com.arctouch.codechallenge.R
-import com.arctouch.codechallenge.api.TmdbApi
 import com.arctouch.codechallenge.data.Cache
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.model.TopRatedMoviesResponse
+import com.arctouch.codechallenge.util.Constants.Companion.API_KEY
+import com.arctouch.codechallenge.util.Constants.Companion.DEFAULT_LANGUAGE
+import com.arctouch.codechallenge.util.Constants.Companion.DEFAULT_REGION
 import com.arctouch.codechallenge.util.Constants.Companion.PAGE_START
 import com.arctouch.codechallenge.util.PaginationScrollListener
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,7 +35,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun loadCache(){
-        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+        api.genres(API_KEY, DEFAULT_LANGUAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -44,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun loadPage() {
-        api.topRatedMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, currentPage, TmdbApi.DEFAULT_REGION)
+        api.topRatedMovies(API_KEY, DEFAULT_LANGUAGE, currentPage, DEFAULT_REGION)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
