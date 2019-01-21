@@ -24,7 +24,7 @@ class DetailActivity : AppCompatActivity() {
         intent.getBundleExtra(BUNDLE_ARGS)?.let {
             it.getParcelable<Movie>(ARGS_MOVIE)?.let {
                 title = it.title
-                tv_title.text = it.genres?.joinToString(separator = ", ") { it.name }
+                tv_title.text = it.originalTitle
                 tv_summary.text = it.overview
                 Glide.with(this)
                         .load(it.posterPath?.let { movieImageUrlBuilder.buildPosterUrl(it)})
